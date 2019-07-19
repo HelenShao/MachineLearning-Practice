@@ -32,10 +32,12 @@ Model.add_module("Lin3", Linear_Layer3)
 criterion = nn.MSELoss()       #Loss Function      
 optimizer = torch.optim.SGD(Model.parameters(), lr = 0.0001) 
 
-### Training ### 
+### Training ###
+loss_total = np.zeros(3000)
 for epoch in range(3000):
     y_pred = Model(x_train.view(-1,1))
     loss = criterion(y_pred, y_train.view(-1,1))
+    loss_total[epoch] = loss.detach().numpy()
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
@@ -47,8 +49,8 @@ for epoch in range(3000):
 
 # Plot loss as a function of epochs
 
-epochs = np.linspace(1,3000,3000)
-plt.plot(epochs.reshape(1,-1), loss.detach().numpy())
+epochs = np.arange(3000)
+plt.plot(epochs, loss_total)
 plt.ylabel("loss")
 plt.xlabel("epochs")
 
