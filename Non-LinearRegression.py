@@ -19,11 +19,11 @@ plt.xlabel('X')
 plt.show()
 
 #Normalize Data
-x_min = 0
-x_max = 20
+x_min = torch.min(x)
+x_max = torch.max(x)
 
-y_min = 1 + 2*0 + 3/(1+0) + torch.sin(torch.tensor(0.0))
-y_max = 1 + 2*0 + 3/(1+20) + torch.sin(torch.tensor(20.0))
+y_min = torch.min(y)
+y_max = torch.max(y)
 
 x_train= (x - x_min)/(x_max - x_min)
 y_train= (y - y_min)/(y_max - y_min)
