@@ -112,7 +112,7 @@ plt.ylabel('error')
 plt.xlabel('epochs')
 plt.yscale('log')
 plt.xscale('log')
-plt.plot(epochs, error_total)
+plt.plot(epochs, error_valid_total)
 plt.plot(epochs, loss_total)
 plt.show()
 
