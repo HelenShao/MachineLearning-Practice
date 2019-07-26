@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-## Function ##
+## Test Set ##
 x = torch.linspace(0,20,5000)
 y = 1 + 2*x + 3/(1+x) + torch.sin(x)
 
