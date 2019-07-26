@@ -128,7 +128,10 @@ plt.plot(x, y_prediction)   #Not normalized x-values and y_prediction
 y_validation = y_validation * (torch.max(y_valiadtion) - torch.min(y_validation)) + torch.tensor(y_validation)
 
 #Plot prediction and validation set
-plt.ylabel('Y')
+plt.plot(torch.Tensor.numpy(x_test), torch.Tensor.numpy(y_test), label = 'Validation Set')
+plt.plot(torch.Tensor.numpy(x_test), y_validation.detach().numpy(), label = 'Prediction')
+plt.legend(loc='upper left')
 plt.xlabel('X')
-plt.plot(x_test, y_validation)
+plt.ylabel('Y')
+plt.show()
 
