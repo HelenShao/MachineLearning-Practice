@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-## Training Set ##
+## Train Set ##
 x = torch.linspace(0,20,5000)
 y = 1 + 2*x + 3/(1+x) + torch.sin(x)
 
@@ -33,7 +33,8 @@ plt.xlabel('X_Train')
 plt.ylabel('Y_Train')
 plt.show()
 
-# Test/Validation Set
+
+### Test Set ####
 
 x_test = torch.randn(5000)
 y_test = 1 + 2*x_test.view(-1,1) + 3/(1+x_test.view(-1,1)) + torch.sin(x_test.view(-1,1))
@@ -54,13 +55,13 @@ plt.scatter(torch.Tensor.numpy(x_testn), torch.Tensor.numpy(y_testn))
 plt.show()
 
 
-# Create Model Container
+### Create Model Container ###
 Model = nn.Sequential()
 
 # Define Layers
 Linear_Layer = nn.Linear(1,100)       # Add many neuronsin hidden layers
 Relu1 = nn.ReLU(inplace=False)
-Linear_Layer2 = nn.Linear(100,200)
+Linear_Layer2 = nn.Linear(100,200)      
 Relu2 = nn.ReLU(inplace=False)
 Linear_Layer3 = nn.Linear(200,1)
 
@@ -75,8 +76,7 @@ Model.add_module("Lin3", Linear_Layer3)
 
 
 criterion = nn.MSELoss()       #Loss Function           
-optimizer1 = torch.optim.SGD(Model.parameters(), lr = 0.001) 
-optimizer2 = torch.optim.SGD(Model.parameters(), lr = 0.001) 
+optimizer1 = torch.optim.SGD(Model.parameters(), lr = 0.008) 
 
 
 ### Training ###
@@ -96,9 +96,6 @@ for epoch in range(5000):
     y_validation = Model(x_testn.view(-1,1))
     error_valid = criterion(y_validation, y_testn.view(-1,1))   #Loss function for validation set
     error_valid_total[epoch] = error_valid.detach().numpy()
-    optimizer2.zero_grad()
-    error_valid.backward()
-    optimizer2.step()
     
     #Print Loss for both
     loss_tensor = torch.tensor(loss)
@@ -112,16 +109,17 @@ plt.ylabel('error')
 plt.xlabel('epochs')
 plt.yscale('log')
 plt.xscale('log')
-plt.plot(epochs, error_valid_total)
-plt.plot(epochs, loss_total)
+plt.plot(epochs, error_valid_total, label = 'Error for Validation')
+plt.plot(epochs, loss_total, label = 'Training Loss')
+plt.legend(loc = 'center right')
 plt.show()
 
 # Undo Normalization for y_prediction
-y_pred = y_pred * (torch.max(y_pred) - torch.min(y_pred)) + torch.tensor(y_pred)
+y_pred = y_pred * (y_max - y_min) + y_min
 
 #Plot prediction and training set
-plt.plot(torch.Tensor.numpy(x_train), torch.Tensor.numpy(y_train), label = 'Training Set')
-plt.plot(torch.Tensor.numpy(x_train), y_pred.detach().numpy(), label = 'Prediction')
+plt.plot(torch.Tensor.numpy(x), torch.Tensor.numpy(y), label = 'Training Set')
+plt.plot(torch.Tensor.numpy(x), y_pred.detach().numpy(), label = 'Prediction')
 plt.legend(loc='upper left')
 plt.xlabel('X')
 plt.ylabel('Y')
@@ -129,7 +127,8 @@ plt.show()
 
 
 #Undo Normalization for y_validation
-y_validation = y_validation * (torch.max(y_validation) - torch.min(y_validation)) + torch.tensor(y_validation)
+y_validation = y_validation * (y_test_max - y_test_min) + y_test_min
+
 
 #Plot prediction and validation set
 plt.plot(torch.Tensor.numpy(x_test), torch.Tensor.numpy(y_test), label = 'Validation Set')
@@ -138,4 +137,3 @@ plt.legend(loc='upper left')
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.show()
-
