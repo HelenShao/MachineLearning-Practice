@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-## Test Set ##
+## Training Set ##
 x = torch.linspace(0,20,5000)
 y = 1 + 2*x + 3/(1+x) + torch.sin(x)
 
@@ -33,7 +33,7 @@ plt.xlabel('X_Train')
 plt.ylabel('Y_Train')
 plt.show()
 
-# Test Set
+# Test/Validation Set
 
 x_test = torch.randn(5000)
 y_test = 1 + 2*x_test.view(-1,1) + 3/(1+x_test.view(-1,1)) + torch.sin(x_test.view(-1,1))
