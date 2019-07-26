@@ -117,12 +117,16 @@ plt.plot(epochs, loss_total)
 plt.show()
 
 # Undo Normalization for y_prediction
-y_prediction = y_prediction * (torch.max(y_prediction) - torch.min(y_prediction)) + torch.tensor(y_prediction)
+y_pred = y_pred * (torch.max(y_pred) - torch.min(y_pred)) + torch.tensor(y_pred)
 
 #Plot prediction and training set
-plt.ylabel('Y')
+plt.plot(torch.Tensor.numpy(x_train), torch.Tensor.numpy(y_train), label = 'Training Set')
+plt.plot(torch.Tensor.numpy(x_train), y_pred.detach().numpy(), label = 'Prediction')
+plt.legend(loc='upper left')
 plt.xlabel('X')
-plt.plot(x, y_prediction)   #Not normalized x-values and y_prediction
+plt.ylabel('Y')
+plt.show()
+
 
 #Undo Normalization for y_validation
 y_validation = y_validation * (torch.max(y_valiadtion) - torch.min(y_validation)) + torch.tensor(y_validation)
