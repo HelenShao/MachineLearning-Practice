@@ -129,7 +129,7 @@ plt.show()
 
 
 #Undo Normalization for y_validation
-y_validation = y_validation * (torch.max(y_valiadtion) - torch.min(y_validation)) + torch.tensor(y_validation)
+y_validation = y_validation * (torch.max(y_validation) - torch.min(y_validation)) + torch.tensor(y_validation)
 
 #Plot prediction and validation set
 plt.plot(torch.Tensor.numpy(x_test), torch.Tensor.numpy(y_test), label = 'Validation Set')
