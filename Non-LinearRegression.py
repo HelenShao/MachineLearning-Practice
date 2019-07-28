@@ -34,10 +34,11 @@ plt.ylabel('Y_Train')
 plt.show()
 
 
-### Test Set ####
+### Validation Set ####
 
-x_test = torch.randn(5000)
-y_test = 1 + 2*x_test.view(-1,1) + 3/(1+x_test.view(-1,1)) + torch.sin(x_test.view(-1,1))
+x_test = np.random.uniform(0, 20, (5000))
+x_test = torch.from_numpy(x_test).float()
+y_test = 1 + 2*x_test + (3/(1+x_test)) + torch.sin(x_test)
 
 #Normalize Data
 x_test_min = torch.min(x_test)
@@ -50,8 +51,17 @@ y_test_max = torch.max(y_test)
 x_testn= (x_test - x_test_min)/(x_test_max - x_test_min)
 y_testn= (y_test - y_test_min)/(y_test_max - y_test_min)
 
-print(y_testn)
-plt.scatter(torch.Tensor.numpy(x_testn), torch.Tensor.numpy(y_testn))
+
+#Plot the training and validation sets
+
+plt.scatter(torch.Tensor.numpy(x_test), torch.Tensor.numpy(y_test), label= 'Validation Set', color = 'r')
+plt.plot(torch.Tensor.numpy(x), torch.Tensor.numpy(y), label = 'Train Set')
+plt.legend(loc = 'upper left')
+plt.show()
+
+plt.scatter(torch.Tensor.numpy(x_testn), torch.Tensor.numpy(y_testn), label= 'Validation Set', color = 'r')
+plt.plot(torch.Tensor.numpy(x_train), torch.Tensor.numpy(y_train), label = 'Train Set')
+plt.legend(loc = 'upper left')
 plt.show()
 
 
@@ -76,7 +86,7 @@ Model.add_module("Lin3", Linear_Layer3)
 
 
 criterion = nn.MSELoss()       #Loss Function           
-optimizer1 = torch.optim.SGD(Model.parameters(), lr = 0.008) 
+optimizer1 = torch.optim.SGD(Model.parameters(), lr = 0.005) 
 
 
 ### Training ###
@@ -131,7 +141,7 @@ y_validation = y_validation * (y_test_max - y_test_min) + y_test_min
 
 
 #Plot prediction and validation set
-plt.plot(torch.Tensor.numpy(x_test), torch.Tensor.numpy(y_test), label = 'Validation Set')
+plt.scatter(torch.Tensor.numpy(x_test), torch.Tensor.numpy(y_test), color = 'r', label = 'Validation Set')
 plt.plot(torch.Tensor.numpy(x_test), y_validation.detach().numpy(), label = 'Prediction')
 plt.legend(loc='upper left')
 plt.xlabel('X')
