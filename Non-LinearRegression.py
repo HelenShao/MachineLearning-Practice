@@ -4,8 +4,8 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 import torch.utils.data as Data
 
+import sys,os
 import matplotlib.pyplot as plt
-
 import numpy as np
 
 
@@ -86,16 +86,20 @@ Model.add_module("Lin3", Linear_Layer3)
 
 
 criterion = nn.MSELoss()       #Loss Function           
-optimizer1 = torch.optim.SGD(Model.parameters(), lr = 0.005) 
+optimizer1 = torch.optim.SGD(Model.parameters(), lr = 0.0001) 
 
 
-### Training ###
+##### Training #####
 loss_total = np.zeros(5000) # Loss for training set
 error_valid_total = np.zeros(5000) # Loss for validation set
 
-Model.train()
+# load best-model
+if os.path.exists('BestModel.pt'):
+    Model.load_state_dict(torch.load('BestModel.pt'))
 
+best_validation = 1e7
 for epoch in range(5000):
+    Model.train()
     y_pred = Model(x_train.view(-1,1))
     loss = criterion(y_pred, y_train.view(-1,1))     #Loss function for train set
     loss_total[epoch] = loss.detach().numpy()
@@ -103,17 +107,23 @@ for epoch in range(5000):
     loss.backward()
     optimizer1.step()
     
+    Model.eval()
     y_validation = Model(x_testn.view(-1,1))
     error_valid = criterion(y_validation, y_testn.view(-1,1))   #Loss function for validation set
     error_valid_total[epoch] = error_valid.detach().numpy()
+    if error_valid_total[epoch]<best_validation:
+        best_validation = error_valid_total[epoch]
+        torch.save(Model.state_dict(), 'BestModel.pt')
     
     #Print Loss for both
     loss_tensor = torch.tensor(loss)
     error_valid_tensor = torch.tensor(error_valid)
     print('epoch: ', epoch, 'loss: ', loss_tensor.item(), '  error:', error_valid_tensor.item())
-    
-    
+   
+
 # Plot Training Loss and Validation Error
+
+epochs = np.arange(5000)
 
 plt.ylabel('error')
 plt.xlabel('epochs')
@@ -142,7 +152,7 @@ y_validation = y_validation * (y_test_max - y_test_min) + y_test_min
 
 #Plot prediction and validation set
 plt.scatter(torch.Tensor.numpy(x_test), torch.Tensor.numpy(y_test), color = 'r', label = 'Validation Set')
-plt.plot(torch.Tensor.numpy(x_test), y_validation.detach().numpy(), label = 'Prediction')
+plt.plot(torch.Tensor.numpy(x_test), y_validation.detach().numpy(), label = 'Prediction', lw=1)
 plt.legend(loc='upper left')
 plt.xlabel('X')
 plt.ylabel('Y')
